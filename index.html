@@ -336,6 +336,105 @@
             background: #F2F2F7;
         }
 
+        /* Sistema de Alertas */
+        .alert {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            border-radius: 12px;
+            padding: 16px 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 280px;
+            max-width: 90%;
+            opacity: 0;
+            transform: translateX(-50%) translateY(-20px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .alert.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .alert.success {
+            border-left: 4px solid #34C759;
+        }
+
+        .alert.error {
+            border-left: 4px solid #FF3B30;
+        }
+
+        .alert.info {
+            border-left: 4px solid #007AFF;
+        }
+
+        .alert.warning {
+            border-left: 4px solid #FF9500;
+        }
+
+        .alert-icon {
+            font-size: 20px;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .alert.success .alert-icon {
+            color: #34C759;
+        }
+
+        .alert.error .alert-icon {
+            color: #FF3B30;
+        }
+
+        .alert.info .alert-icon {
+            color: #007AFF;
+        }
+
+        .alert.warning .alert-icon {
+            color: #FF9500;
+        }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .alert-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 2px;
+            color: #000;
+        }
+
+        .alert-message {
+            font-size: 14px;
+            color: #8E8E93;
+            line-height: 1.3;
+        }
+
+        .alert-close {
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: #8E8E93;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .alert-close:hover {
+            background: #F2F2F7;
+        }
+
         /* Safe area para iPhone 14 */
         @supports (padding: max(0px)) {
             .header {
@@ -344,6 +443,10 @@
             
             .add-btn {
                 bottom: max(34px, env(safe-area-inset-bottom) + 20px);
+            }
+            
+            .alert {
+                top: max(20px, env(safe-area-inset-top) + 10px);
             }
         }
     </style>
@@ -396,7 +499,63 @@
         </div>
     </div>
 
+    <!-- Sistema de Alertas -->
+    <div id="alert-container"></div>
+
     <script>
+        // Sistema de Alertas
+        function showAlert(type, title, message, duration = 3000) {
+            const container = document.getElementById('alert-container');
+            if (!container) return;
+
+            const alertId = 'alert-' + Date.now();
+            const alertHTML = `
+                <div class="alert ${type}" id="${alertId}">
+                    <div class="alert-icon">
+                        ${getAlertIcon(type)}
+                    </div>
+                    <div class="alert-content">
+                        <div class="alert-title">${title}</div>
+                        <div class="alert-message">${message}</div>
+                    </div>
+                    <button class="alert-close" onclick="hideAlert('${alertId}')">&times;</button>
+                </div>
+            `;
+
+            container.insertAdjacentHTML('beforeend', alertHTML);
+            
+            const alertElement = document.getElementById(alertId);
+            if (alertElement) {
+                setTimeout(() => alertElement.classList.add('show'), 10);
+                
+                if (duration > 0) {
+                    setTimeout(() => hideAlert(alertId), duration);
+                }
+            }
+        }
+
+        function getAlertIcon(type) {
+            const icons = {
+                success: '✅',
+                error: '❌',
+                warning: '⚠️',
+                info: 'ℹ️'
+            };
+            return icons[type] || 'ℹ️';
+        }
+
+        function hideAlert(alertId) {
+            const alertElement = document.getElementById(alertId);
+            if (alertElement) {
+                alertElement.classList.remove('show');
+                setTimeout(() => {
+                    if (alertElement.parentNode) {
+                        alertElement.parentNode.removeChild(alertElement);
+                    }
+                }, 300);
+            }
+        }
+
         // Dados dos treinos
         let workouts = JSON.parse(localStorage.getItem('workouts')) || [];
         let currentWorkoutId = null;
@@ -474,6 +633,7 @@
             const input = document.getElementById('workout-name');
             if (modal) modal.style.display = 'block';
             if (input) input.focus();
+            showAlert('info', 'Novo Treino', 'Digite o nome do seu novo treino', 2000);
         }
 
         function hideAddWorkoutModal() {
@@ -488,7 +648,10 @@
             if (!input) return;
             
             const name = input.value.trim();
-            if (!name) return;
+            if (!name) {
+                showAlert('warning', 'Nome Obrigatório', 'Digite um nome para o treino', 3000);
+                return;
+            }
             
             const newWorkout = {
                 id: Date.now(),
@@ -502,13 +665,18 @@
             saveWorkouts();
             renderWorkouts();
             hideAddWorkoutModal();
+            showAlert('success', 'Treino Criado!', `"${name}" foi adicionado com sucesso`, 3000);
         }
 
         function showWorkoutDetail(workoutId) {
             const workout = workouts.find(w => w.id === workoutId);
-            if (!workout) return;
+            if (!workout) {
+                showAlert('error', 'Erro', 'Treino não encontrado', 3000);
+                return;
+            }
             
             currentWorkoutId = workoutId;
+            showAlert('info', 'Detalhes do Treino', `Visualizando "${workout.name}"`, 2000);
             
             const nameElement = document.getElementById('detail-workout-name');
             if (nameElement) nameElement.textContent = workout.name;
@@ -560,24 +728,38 @@
         }
 
         function markWorkoutCompleted() {
-            if (!currentWorkoutId) return;
+            if (!currentWorkoutId) {
+                showAlert('error', 'Erro', 'Nenhum treino selecionado', 3000);
+                return;
+            }
             
             const workout = workouts.find(w => w.id === currentWorkoutId);
             if (workout) {
+                if (workout.isCompleted) {
+                    showAlert('warning', 'Já Concluído', 'Este treino já foi marcado como concluído', 3000);
+                    return;
+                }
+                
                 workout.isCompleted = true;
                 workout.completedDate = new Date().toISOString();
                 saveWorkouts();
                 renderWorkouts();
                 hideWorkoutDetailModal();
+                showAlert('success', 'Parabéns! 🎉', `Treino "${workout.name}" concluído com sucesso!`, 4000);
+            } else {
+                showAlert('error', 'Erro', 'Treino não encontrado', 3000);
             }
         }
 
         // Event listeners
-        document.getElementById('workout-name').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                addWorkout();
-            }
-        });
+        const workoutNameInput = document.getElementById('workout-name');
+        if (workoutNameInput) {
+            workoutNameInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    addWorkout();
+                }
+            });
+        }
 
         // Fechar modais clicando fora
         document.getElementById('add-workout-modal').addEventListener('click', function(e) {
@@ -595,6 +777,11 @@
         // Inicializar
         updateWorkoutCount();
         renderWorkouts();
+        
+        // Alert de boas-vindas
+        setTimeout(() => {
+            showAlert('info', 'Bem-vindo! 👋', 'Seu app de academia está pronto para usar', 3000);
+        }, 1000);
     </script>
 </body>
 </html>
