@@ -657,18 +657,26 @@
             const container = document.getElementById('workouts-list');
             const emptyState = document.getElementById('empty-state');
             
-            if (!container || !emptyState) return;
+            if (!container || !emptyState) {
+                console.error('Elementos não encontrados para renderizar treinos');
+                return;
+            }
+            
+            // Limpar container primeiro
+            container.innerHTML = '';
             
             if (workouts.length === 0) {
                 emptyState.style.display = 'block';
-                container.innerHTML = '';
                 return;
             }
             
             emptyState.style.display = 'none';
             
-            container.innerHTML = workouts.map(workout => `
-                <div class="workout-card ${workout.isCompleted ? 'completed' : ''}">
+            // Renderizar cada treino
+            workouts.forEach(workout => {
+                const workoutCard = document.createElement('div');
+                workoutCard.className = `workout-card ${workout.isCompleted ? 'completed' : ''}`;
+                workoutCard.innerHTML = `
                     <div class="workout-header" onclick="showWorkoutDetail(${workout.id})">
                         <div class="workout-icon ${workout.isCompleted ? 'completed' : 'pending'}">
                             ${workout.isCompleted ? '✅' : '🏋️‍♂️'}
@@ -684,8 +692,9 @@
                         <button class="action-btn edit" onclick="editWorkout(${workout.id})">Editar</button>
                         <button class="action-btn delete" onclick="deleteWorkout(${workout.id})">Remover</button>
                     </div>
-                </div>
-            `).join('');
+                `;
+                container.appendChild(workoutCard);
+            });
         }
 
         function showAddWorkoutModal() {
@@ -823,8 +832,13 @@
             if (newName && newName.trim() !== workout.name) {
                 workout.name = newName.trim();
                 saveWorkouts();
-                renderWorkouts();
-                updateWorkoutCount();
+                
+                // Forçar atualização imediata
+                setTimeout(() => {
+                    renderWorkouts();
+                    updateWorkoutCount();
+                }, 10);
+                
                 showAlert('success', 'Treino Editado!', `Nome alterado para "${workout.name}"`, 3000);
             }
         }
@@ -841,8 +855,13 @@
                 if (index > -1) {
                     workouts.splice(index, 1);
                     saveWorkouts();
-                    renderWorkouts();
-                    updateWorkoutCount();
+                    
+                    // Forçar atualização imediata
+                    setTimeout(() => {
+                        renderWorkouts();
+                        updateWorkoutCount();
+                    }, 10);
+                    
                     showAlert('success', 'Treino Removido', `"${workout.name}" foi removido com sucesso`, 3000);
                 }
             }
