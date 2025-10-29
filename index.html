@@ -5,9 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Meu App Academia</title>
     <meta name="theme-color" content="#007AFF">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="Gym App">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏋️‍♂️</text></svg>">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="default">
+        <meta name="apple-mobile-web-app-title" content="Gym App">
     <style>
         * {
             margin: 0;
@@ -650,7 +652,16 @@
         }
 
         function updateWorkoutCount() {
-            document.getElementById('workout-count').textContent = `${workouts.length} treinos criados`;
+            const countElement = document.getElementById('workout-count');
+            if (countElement) {
+                countElement.textContent = `${workouts.length} treinos criados`;
+            }
+        }
+
+        // Função de debug para verificar dados
+        function debugWorkouts() {
+            console.log('Total de treinos:', workouts.length);
+            console.log('Treinos:', workouts);
         }
 
         function renderWorkouts() {
@@ -659,10 +670,13 @@
             
             if (!container || !emptyState) {
                 console.error('Elementos não encontrados para renderizar treinos');
+                console.log('Container encontrado:', !!container);
+                console.log('Empty state encontrado:', !!emptyState);
+                console.log('DOM carregado:', document.readyState);
                 return;
             }
             
-            // Limpar container primeiro
+            // Limpar completamente o container
             container.innerHTML = '';
             
             if (workouts.length === 0) {
@@ -672,11 +686,9 @@
             
             emptyState.style.display = 'none';
             
-            // Renderizar cada treino
-            workouts.forEach(workout => {
-                const workoutCard = document.createElement('div');
-                workoutCard.className = `workout-card ${workout.isCompleted ? 'completed' : ''}`;
-                workoutCard.innerHTML = `
+            // Criar HTML de todos os treinos de uma vez
+            const workoutsHTML = workouts.map(workout => `
+                <div class="workout-card ${workout.isCompleted ? 'completed' : ''}">
                     <div class="workout-header" onclick="showWorkoutDetail(${workout.id})">
                         <div class="workout-icon ${workout.isCompleted ? 'completed' : 'pending'}">
                             ${workout.isCompleted ? '✅' : '🏋️‍♂️'}
@@ -692,9 +704,11 @@
                         <button class="action-btn edit" onclick="editWorkout(${workout.id})">Editar</button>
                         <button class="action-btn delete" onclick="deleteWorkout(${workout.id})">Remover</button>
                     </div>
-                `;
-                container.appendChild(workoutCard);
-            });
+                </div>
+            `).join('');
+            
+            // Inserir tudo de uma vez
+            container.innerHTML = workoutsHTML;
         }
 
         function showAddWorkoutModal() {
@@ -822,6 +836,7 @@
         }
 
         function editWorkout(workoutId) {
+            console.log('Editando treino ID:', workoutId);
             const workout = workouts.find(w => w.id === workoutId);
             if (!workout) {
                 showAlert('error', 'Erro', 'Treino não encontrado', 3000);
@@ -830,20 +845,30 @@
 
             const newName = prompt('Editar nome do treino:', workout.name);
             if (newName && newName.trim() !== workout.name) {
+                console.log('Nome antigo:', workout.name, 'Nome novo:', newName.trim());
+                
+                // Atualizar o nome
                 workout.name = newName.trim();
+                
+                // Salvar no localStorage
                 saveWorkouts();
                 
-                // Forçar atualização imediata
+                // Debug: verificar se foi salvo
+                console.log('Após editar - Total treinos:', workouts.length);
+                debugWorkouts();
+                
+                // Atualizar interface IMEDIATAMENTE
                 setTimeout(() => {
                     renderWorkouts();
                     updateWorkoutCount();
-                }, 10);
+                }, 100);
                 
                 showAlert('success', 'Treino Editado!', `Nome alterado para "${workout.name}"`, 3000);
             }
         }
 
         function deleteWorkout(workoutId) {
+            console.log('Removendo treino ID:', workoutId);
             const workout = workouts.find(w => w.id === workoutId);
             if (!workout) {
                 showAlert('error', 'Erro', 'Treino não encontrado', 3000);
@@ -851,19 +876,24 @@
             }
 
             if (confirm(`Tem certeza que deseja remover o treino "${workout.name}"?`)) {
-                const index = workouts.findIndex(w => w.id === workoutId);
-                if (index > -1) {
-                    workouts.splice(index, 1);
-                    saveWorkouts();
-                    
-                    // Forçar atualização imediata
-                    setTimeout(() => {
-                        renderWorkouts();
-                        updateWorkoutCount();
-                    }, 10);
-                    
-                    showAlert('success', 'Treino Removido', `"${workout.name}" foi removido com sucesso`, 3000);
-                }
+                console.log('Antes de remover - Total treinos:', workouts.length);
+                
+                // Remover do array
+                workouts = workouts.filter(w => w.id !== workoutId);
+                
+                console.log('Após remover - Total treinos:', workouts.length);
+                debugWorkouts();
+                
+                // Salvar no localStorage
+                saveWorkouts();
+                
+                // Atualizar interface IMEDIATAMENTE
+                setTimeout(() => {
+                    renderWorkouts();
+                    updateWorkoutCount();
+                }, 100);
+                
+                showAlert('success', 'Treino Removido', `"${workout.name}" foi removido com sucesso`, 3000);
             }
         }
 
