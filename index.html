@@ -170,19 +170,38 @@
             margin-bottom: 12px;
         }
 
+        .exercise-checkbox-container {
+            padding: 8px;
+            margin: -8px;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: background-color 0.2s;
+        }
+
+        .exercise-checkbox-container:hover {
+            background-color: rgba(0, 122, 255, 0.05);
+        }
+
+        .exercise-checkbox-container:active {
+            background-color: rgba(0, 122, 255, 0.1);
+        }
+
         .exercise-checkbox {
-            width: 20px;
-            height: 20px;
-            border-radius: 6px;
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
             border: 2px solid #007AFF;
             background: white;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
+            font-size: 16px;
             color: white;
             transition: all 0.2s;
+            flex-shrink: 0;
+            min-width: 28px;
+            min-height: 28px;
         }
 
         .exercise-checkbox.checked {
@@ -994,8 +1013,10 @@
                     exercisesList.innerHTML = workout.exercises.map(exercise => `
                         <div class="exercise-item ${exercise.isCompleted ? 'completed' : ''}">
                             <div class="exercise-header">
-                                <div class="exercise-checkbox ${exercise.isCompleted ? 'checked' : ''}" 
+                                <div class="exercise-checkbox-container" 
                                      onclick="toggleExerciseCompleted(${workoutId}, ${exercise.id})">
+                                    <div class="exercise-checkbox ${exercise.isCompleted ? 'checked' : ''}">
+                                    </div>
                                 </div>
                                 <div class="exercise-info">
                                     <div class="exercise-name">${exercise.name}</div>
