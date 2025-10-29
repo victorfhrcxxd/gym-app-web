@@ -4,12 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Meu App Academia</title>
-    <meta name="description" content="App de Academia Web - Gerencie seus treinos de forma simples e eficiente">
     <meta name="theme-color" content="#007AFF">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Gym App">
-    <link rel="manifest" href="manifest.json">
     <style>
         * {
             margin: 0;
@@ -17,179 +15,85 @@
             box-sizing: border-box;
         }
 
-        :root {
-            --primary-color: #007AFF;
-            --secondary-color: #5856D6;
-            --success-color: #34C759;
-            --warning-color: #FF9500;
-            --danger-color: #FF3B30;
-            --background-color: #F2F2F7;
-            --card-background: #FFFFFF;
-            --text-primary: #000000;
-            --text-secondary: #8E8E93;
-            --border-color: #C6C6C8;
-            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', sans-serif;
-            background: var(--background-color);
-            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            background: #F2F2F7;
+            color: #000;
             min-height: 100vh;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }
 
         .container {
             max-width: 390px;
             margin: 0 auto;
-            background: var(--background-color);
+            background: #F2F2F7;
             min-height: 100vh;
             position: relative;
         }
 
-        /* Header otimizado para iPhone 14 */
+        /* Header específico para iPhone 14 */
         .header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            background: linear-gradient(135deg, #007AFF 0%, #5856D6 100%);
             color: white;
             padding: 60px 20px 20px 20px;
             text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
-            opacity: 0.3;
-        }
-
-        .header-content {
-            position: relative;
-            z-index: 1;
         }
 
         .header h1 {
             font-size: 28px;
             font-weight: 700;
             margin-bottom: 8px;
-            letter-spacing: -0.5px;
         }
 
         .header p {
             opacity: 0.9;
             font-size: 15px;
-            font-weight: 400;
         }
 
-        .stats-row {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 20px;
-            padding: 16px 0;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            backdrop-filter: blur(10px);
-        }
-
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 20px;
-            font-weight: 700;
-            display: block;
-        }
-
-        .stat-label {
-            font-size: 12px;
-            opacity: 0.8;
-            margin-top: 2px;
-        }
-
-        /* Botão flutuante otimizado */
-        .add-workout-btn {
+        /* Botão flutuante fixo */
+        .add-btn {
             position: fixed;
             bottom: 34px;
             right: 20px;
             width: 56px;
             height: 56px;
             border-radius: 28px;
-            background: var(--primary-color);
+            background: #007AFF;
             color: white;
             border: none;
             font-size: 24px;
             cursor: pointer;
-            box-shadow: var(--shadow-hover);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
             z-index: 100;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .add-workout-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 16px rgba(0, 122, 255, 0.4);
-        }
-
-        .add-workout-btn:active {
+        .add-btn:active {
             transform: scale(0.95);
         }
 
-        /* Lista de treinos otimizada */
+        /* Lista de treinos */
         .workouts-list {
             padding: 20px;
             padding-bottom: 100px;
         }
 
         .workout-card {
-            background: var(--card-background);
+            background: white;
             border-radius: 16px;
             padding: 20px;
             margin-bottom: 16px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border-color);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .workout-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: var(--primary-color);
-            transition: width 0.3s ease;
-        }
-
-        .workout-card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-hover);
-        }
-
-        .workout-card:hover::before {
-            width: 6px;
+            border-left: 4px solid #007AFF;
         }
 
         .workout-card.completed {
-            opacity: 0.7;
-        }
-
-        .workout-card.completed::before {
-            background: var(--success-color);
+            border-left-color: #34C759;
+            opacity: 0.8;
         }
 
         .workout-header {
@@ -207,18 +111,17 @@
             justify-content: center;
             font-size: 18px;
             margin-right: 16px;
-            background: var(--background-color);
-            transition: all 0.3s ease;
+            background: #F2F2F7;
         }
 
         .workout-icon.completed {
             background: rgba(52, 199, 89, 0.1);
-            color: var(--success-color);
+            color: #34C759;
         }
 
         .workout-icon.pending {
             background: rgba(0, 122, 255, 0.1);
-            color: var(--primary-color);
+            color: #007AFF;
         }
 
         .workout-info {
@@ -228,80 +131,45 @@
         .workout-name {
             font-size: 18px;
             font-weight: 600;
-            color: var(--text-primary);
             margin-bottom: 4px;
-            line-height: 1.3;
         }
 
         .workout-details {
-            display: flex;
-            gap: 16px;
             font-size: 14px;
-            color: var(--text-secondary);
-        }
-
-        .workout-detail {
-            display: flex;
-            align-items: center;
-            gap: 4px;
+            color: #8E8E93;
         }
 
         .workout-date {
             font-size: 12px;
-            color: var(--text-secondary);
+            color: #8E8E93;
             margin-top: 8px;
         }
 
-        .workout-status {
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            padding: 4px 8px;
-            border-radius: 8px;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .workout-status.completed {
-            background: rgba(52, 199, 89, 0.1);
-            color: var(--success-color);
-        }
-
-        .workout-status.pending {
-            background: rgba(0, 122, 255, 0.1);
-            color: var(--primary-color);
-        }
-
-        /* Estado vazio otimizado */
+        /* Estado vazio */
         .empty-state {
             text-align: center;
             padding: 80px 20px;
-            color: var(--text-secondary);
+            color: #8E8E93;
         }
 
         .empty-state .icon {
             font-size: 80px;
             margin-bottom: 24px;
-            opacity: 0.6;
         }
 
         .empty-state h3 {
             font-size: 22px;
             font-weight: 600;
             margin-bottom: 12px;
-            color: var(--text-primary);
+            color: #000;
         }
 
         .empty-state p {
             font-size: 16px;
             line-height: 1.5;
-            max-width: 280px;
-            margin: 0 auto;
         }
 
-        /* Modais otimizados */
+        /* Modal simples */
         .modal {
             display: none;
             position: fixed;
@@ -311,7 +179,6 @@
             height: 100%;
             background: rgba(0, 0, 0, 0.4);
             z-index: 1000;
-            backdrop-filter: blur(8px);
         }
 
         .modal-content {
@@ -319,17 +186,11 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: var(--card-background);
+            background: white;
             border-radius: 20px 20px 0 0;
             padding: 24px;
             max-height: 80vh;
             overflow-y: auto;
-            transform: translateY(100%);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .modal.show .modal-content {
-            transform: translateY(0);
         }
 
         .modal-header {
@@ -338,13 +199,12 @@
             align-items: center;
             margin-bottom: 24px;
             padding-bottom: 16px;
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 1px solid #C6C6C8;
         }
 
         .modal-header h2 {
             font-size: 22px;
             font-weight: 700;
-            color: var(--text-primary);
         }
 
         .close-btn {
@@ -352,18 +212,17 @@
             border: none;
             font-size: 28px;
             cursor: pointer;
-            color: var(--text-secondary);
+            color: #8E8E93;
             width: 32px;
             height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 16px;
-            transition: background-color 0.2s;
         }
 
-        .close-btn:hover {
-            background: var(--background-color);
+        .close-btn:active {
+            background: #F2F2F7;
         }
 
         .form-group {
@@ -374,24 +233,21 @@
             display: block;
             font-weight: 600;
             margin-bottom: 8px;
-            color: var(--text-primary);
             font-size: 16px;
         }
 
         .form-group input {
             width: 100%;
             padding: 16px;
-            border: 2px solid var(--border-color);
+            border: 2px solid #C6C6C8;
             border-radius: 12px;
             font-size: 16px;
-            transition: all 0.2s;
-            background: var(--card-background);
+            background: white;
         }
 
         .form-group input:focus {
             outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+            border-color: #007AFF;
         }
 
         .btn {
@@ -402,30 +258,24 @@
             font-size: 17px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
             margin-top: 8px;
         }
 
         .btn-primary {
-            background: var(--primary-color);
+            background: #007AFF;
             color: white;
         }
 
-        .btn-primary:hover {
+        .btn-primary:active {
             background: #0056CC;
         }
 
-        .btn-primary:disabled {
-            background: var(--text-secondary);
-            cursor: not-allowed;
-        }
-
         .btn-success {
-            background: var(--success-color);
+            background: #34C759;
             color: white;
         }
 
-        .btn-success:hover {
+        .btn-success:active {
             background: #28A745;
         }
 
@@ -438,22 +288,19 @@
             font-size: 24px;
             font-weight: 700;
             margin-bottom: 24px;
-            color: var(--text-primary);
         }
 
         .exercise-card {
-            background: var(--background-color);
+            background: #F2F2F7;
             border-radius: 12px;
             padding: 20px;
             margin-bottom: 16px;
-            border: 1px solid var(--border-color);
         }
 
         .exercise-name {
             font-size: 18px;
             font-weight: 600;
             margin-bottom: 12px;
-            color: var(--text-primary);
         }
 
         .exercise-details {
@@ -461,7 +308,7 @@
             grid-template-columns: repeat(3, 1fr);
             gap: 16px;
             font-size: 14px;
-            color: var(--text-secondary);
+            color: #8E8E93;
         }
 
         .exercise-detail {
@@ -469,13 +316,9 @@
             align-items: center;
             gap: 6px;
             padding: 8px;
-            background: var(--card-background);
+            background: white;
             border-radius: 8px;
             text-align: center;
-        }
-
-        .exercise-detail span:first-child {
-            font-size: 16px;
         }
 
         .back-btn {
@@ -483,35 +326,14 @@
             border: none;
             font-size: 18px;
             cursor: pointer;
-            color: var(--primary-color);
+            color: #007AFF;
             margin-bottom: 24px;
             padding: 8px;
             border-radius: 8px;
-            transition: background-color 0.2s;
         }
 
-        .back-btn:hover {
-            background: var(--background-color);
-        }
-
-        /* Animações específicas para iPhone 14 */
-        @media (max-width: 428px) {
-            .container {
-                max-width: 100%;
-            }
-            
-            .modal-content {
-                border-radius: 16px 16px 0 0;
-            }
-            
-            .workout-card {
-                margin-bottom: 12px;
-            }
-            
-            .stats-row {
-                margin-top: 16px;
-                padding: 12px 0;
-            }
+        .back-btn:active {
+            background: #F2F2F7;
         }
 
         /* Safe area para iPhone 14 */
@@ -520,55 +342,18 @@
                 padding-top: max(60px, env(safe-area-inset-top));
             }
             
-            .add-workout-btn {
+            .add-btn {
                 bottom: max(34px, env(safe-area-inset-bottom) + 20px);
-            }
-        }
-
-        /* Melhorias de acessibilidade */
-        @media (prefers-reduced-motion: reduce) {
-            * {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-            }
-        }
-
-        /* Modo escuro automático */
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --background-color: #000000;
-                --card-background: #1C1C1E;
-                --text-primary: #FFFFFF;
-                --text-secondary: #8E8E93;
-                --border-color: #38383A;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Header otimizado -->
+        <!-- Header -->
         <div class="header">
-            <div class="header-content">
-                <h1>🏋️‍♂️ Meus Treinos</h1>
-                <p id="workout-count">0 treinos criados</p>
-                
-                <div class="stats-row">
-                    <div class="stat-item">
-                        <span class="stat-number" id="total-workouts">0</span>
-                        <span class="stat-label">Treinos</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number" id="completed-workouts">0</span>
-                        <span class="stat-label">Concluídos</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number" id="total-exercises">0</span>
-                        <span class="stat-label">Exercícios</span>
-                    </div>
-                </div>
-            </div>
+            <h1>🏋️‍♂️ Meus Treinos</h1>
+            <p id="workout-count">0 treinos criados</p>
         </div>
 
         <!-- Lista de treinos -->
@@ -576,12 +361,12 @@
             <div class="empty-state" id="empty-state">
                 <div class="icon">🏋️‍♂️</div>
                 <h3>Nenhum treino criado ainda</h3>
-                <p>Toque no + para criar seu primeiro treino e começar sua jornada fitness</p>
+                <p>Toque no + para criar seu primeiro treino</p>
             </div>
         </div>
 
         <!-- Botão flutuante -->
-        <button class="add-workout-btn" onclick="showAddWorkoutModal()">+</button>
+        <button class="add-btn" onclick="showAddWorkoutModal()">+</button>
     </div>
 
     <!-- Modal Adicionar Treino -->
@@ -593,7 +378,7 @@
             </div>
             <div class="form-group">
                 <label for="workout-name">Nome do Treino</label>
-                <input type="text" id="workout-name" placeholder="Ex: Treino A - Peito e Costas">
+                <input type="text" id="workout-name" placeholder="Ex: Treino A - Peito">
             </div>
             <button class="btn btn-primary" onclick="addWorkout()">Criar Treino</button>
         </div>
@@ -616,17 +401,16 @@
         let workouts = JSON.parse(localStorage.getItem('workouts')) || [];
         let currentWorkoutId = null;
 
-        // Dados de exemplo otimizados
+        // Dados de exemplo
         if (workouts.length === 0) {
             workouts = [
                 {
                     id: 1,
                     name: "Treino A - Peito e Costas",
                     exercises: [
-                        { name: "Supino Reto", sets: 4, reps: 12, weight: 60, restTime: 90 },
-                        { name: "Agachamento", sets: 3, reps: 15, weight: 40, restTime: 60 },
-                        { name: "Puxada Frontal", sets: 3, reps: 10, weight: 50, restTime: 75 },
-                        { name: "Flexão de Braço", sets: 3, reps: 20, weight: 0, restTime: 45 }
+                        { name: "Supino Reto", sets: 4, reps: 12, weight: 60 },
+                        { name: "Agachamento", sets: 3, reps: 15, weight: 40 },
+                        { name: "Puxada Frontal", sets: 3, reps: 10, weight: 50 }
                     ],
                     dateCreated: new Date().toISOString(),
                     isCompleted: false
@@ -635,22 +419,9 @@
                     id: 2,
                     name: "Treino B - Ombros e Pernas",
                     exercises: [
-                        { name: "Desenvolvimento", sets: 3, reps: 10, weight: 30, restTime: 60 },
-                        { name: "Remada Curvada", sets: 4, reps: 12, weight: 45, restTime: 75 },
-                        { name: "Leg Press", sets: 3, reps: 20, weight: 100, restTime: 60 },
-                        { name: "Elevação Lateral", sets: 3, reps: 15, weight: 12, restTime: 45 }
-                    ],
-                    dateCreated: new Date().toISOString(),
-                    isCompleted: false
-                },
-                {
-                    id: 3,
-                    name: "Treino C - Cardio e Core",
-                    exercises: [
-                        { name: "Burpees", sets: 3, reps: 10, weight: 0, restTime: 60 },
-                        { name: "Prancha", sets: 3, reps: 30, weight: 0, restTime: 45 },
-                        { name: "Mountain Climber", sets: 3, reps: 20, weight: 0, restTime: 30 },
-                        { name: "Abdominais", sets: 3, reps: 25, weight: 0, restTime: 30 }
+                        { name: "Desenvolvimento", sets: 3, reps: 10, weight: 30 },
+                        { name: "Remada Curvada", sets: 4, reps: 12, weight: 45 },
+                        { name: "Leg Press", sets: 3, reps: 20, weight: 100 }
                     ],
                     dateCreated: new Date().toISOString(),
                     isCompleted: false
@@ -662,23 +433,18 @@
         // Funções principais
         function saveWorkouts() {
             localStorage.setItem('workouts', JSON.stringify(workouts));
-            updateStats();
+            updateWorkoutCount();
         }
 
-        function updateStats() {
-            const totalWorkouts = workouts.length;
-            const completedWorkouts = workouts.filter(w => w.isCompleted).length;
-            const totalExercises = workouts.reduce((sum, w) => sum + w.exercises.length, 0);
-            
-            document.getElementById('workout-count').textContent = `${totalWorkouts} treinos criados`;
-            document.getElementById('total-workouts').textContent = totalWorkouts;
-            document.getElementById('completed-workouts').textContent = completedWorkouts;
-            document.getElementById('total-exercises').textContent = totalExercises;
+        function updateWorkoutCount() {
+            document.getElementById('workout-count').textContent = `${workouts.length} treinos criados`;
         }
 
         function renderWorkouts() {
             const container = document.getElementById('workouts-list');
             const emptyState = document.getElementById('empty-state');
+            
+            if (!container || !emptyState) return;
             
             if (workouts.length === 0) {
                 emptyState.style.display = 'block';
@@ -695,21 +461,9 @@
                         </div>
                         <div class="workout-info">
                             <div class="workout-name">${workout.name}</div>
-                            <div class="workout-details">
-                                <div class="workout-detail">
-                                    <span>🔄</span>
-                                    <span>${workout.exercises.length} exercícios</span>
-                                </div>
-                                <div class="workout-detail">
-                                    <span>⏱️</span>
-                                    <span>~${Math.round(workout.exercises.reduce((sum, ex) => sum + (ex.sets * ex.restTime), 0) / 60)}min</span>
-                                </div>
-                            </div>
+                            <div class="workout-details">${workout.exercises.length} exercícios</div>
                             <div class="workout-date">Criado em ${new Date(workout.dateCreated).toLocaleDateString('pt-BR')}</div>
                         </div>
-                    </div>
-                    <div class="workout-status ${workout.isCompleted ? 'completed' : 'pending'}">
-                        ${workout.isCompleted ? 'Concluído' : 'Pendente'}
                     </div>
                 </div>
             `).join('');
@@ -717,20 +471,23 @@
 
         function showAddWorkoutModal() {
             const modal = document.getElementById('add-workout-modal');
-            modal.style.display = 'block';
-            setTimeout(() => modal.classList.add('show'), 10);
-            document.getElementById('workout-name').focus();
+            const input = document.getElementById('workout-name');
+            if (modal) modal.style.display = 'block';
+            if (input) input.focus();
         }
 
         function hideAddWorkoutModal() {
             const modal = document.getElementById('add-workout-modal');
-            modal.classList.remove('show');
-            setTimeout(() => modal.style.display = 'none', 300);
-            document.getElementById('workout-name').value = '';
+            const input = document.getElementById('workout-name');
+            if (modal) modal.style.display = 'none';
+            if (input) input.value = '';
         }
 
         function addWorkout() {
-            const name = document.getElementById('workout-name').value.trim();
+            const input = document.getElementById('workout-name');
+            if (!input) return;
+            
+            const name = input.value.trim();
             if (!name) return;
             
             const newWorkout = {
@@ -752,49 +509,53 @@
             if (!workout) return;
             
             currentWorkoutId = workoutId;
-            document.getElementById('detail-workout-name').textContent = workout.name;
+            
+            const nameElement = document.getElementById('detail-workout-name');
+            if (nameElement) nameElement.textContent = workout.name;
             
             const exercisesList = document.getElementById('exercises-list');
-            exercisesList.innerHTML = workout.exercises.map(exercise => `
-                <div class="exercise-card">
-                    <div class="exercise-name">${exercise.name}</div>
-                    <div class="exercise-details">
-                        <div class="exercise-detail">
-                            <span>🔄</span>
-                            <span>${exercise.sets} séries</span>
-                        </div>
-                        <div class="exercise-detail">
-                            <span>↻</span>
-                            <span>${exercise.reps} reps</span>
-                        </div>
-                        <div class="exercise-detail">
-                            <span>⚖️</span>
-                            <span>${exercise.weight}kg</span>
+            if (exercisesList) {
+                exercisesList.innerHTML = workout.exercises.map(exercise => `
+                    <div class="exercise-card">
+                        <div class="exercise-name">${exercise.name}</div>
+                        <div class="exercise-details">
+                            <div class="exercise-detail">
+                                <span>🔄</span>
+                                <span>${exercise.sets} séries</span>
+                            </div>
+                            <div class="exercise-detail">
+                                <span>↻</span>
+                                <span>${exercise.reps} reps</span>
+                            </div>
+                            <div class="exercise-detail">
+                                <span>⚖️</span>
+                                <span>${exercise.weight}kg</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-            `).join('');
+                `).join('');
+            }
             
             const completeBtn = document.getElementById('complete-btn');
-            if (workout.isCompleted) {
-                completeBtn.textContent = 'Treino Concluído';
-                completeBtn.disabled = true;
-                completeBtn.style.background = 'var(--text-secondary)';
-            } else {
-                completeBtn.textContent = 'Marcar como Concluído';
-                completeBtn.disabled = false;
-                completeBtn.style.background = 'var(--success-color)';
+            if (completeBtn) {
+                if (workout.isCompleted) {
+                    completeBtn.textContent = 'Treino Concluído';
+                    completeBtn.disabled = true;
+                    completeBtn.style.background = '#8E8E93';
+                } else {
+                    completeBtn.textContent = 'Marcar como Concluído';
+                    completeBtn.disabled = false;
+                    completeBtn.style.background = '#34C759';
+                }
             }
             
             const modal = document.getElementById('workout-detail-modal');
-            modal.style.display = 'block';
-            setTimeout(() => modal.classList.add('show'), 10);
+            if (modal) modal.style.display = 'block';
         }
 
         function hideWorkoutDetailModal() {
             const modal = document.getElementById('workout-detail-modal');
-            modal.classList.remove('show');
-            setTimeout(() => modal.style.display = 'none', 300);
+            if (modal) modal.style.display = 'none';
             currentWorkoutId = null;
         }
 
@@ -811,7 +572,7 @@
             }
         }
 
-        // Event listeners otimizados
+        // Event listeners
         document.getElementById('workout-name').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 addWorkout();
@@ -832,7 +593,7 @@
         });
 
         // Inicializar
-        updateStats();
+        updateWorkoutCount();
         renderWorkouts();
     </script>
 </body>
