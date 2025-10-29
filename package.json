@@ -1,0 +1,17 @@
+{
+  "name": "gym-app-web",
+  "version": "1.0.0",
+  "description": "App de Academia Web - Gerencie seus treinos",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "dev": "python -m http.server 8000"
+  },
+  "keywords": ["gym", "workout", "fitness", "academia", "treino"],
+  "author": "João Victor",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/seu-usuario/gym-app-web.git"
+  }
+}

@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu App Academia</title>
+    <meta name="description" content="App de Academia Web - Gerencie seus treinos de forma simples e eficiente">
+    <meta name="theme-color" content="#667eea">
+    <link rel="manifest" href="manifest.json">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .add-workout-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #007AFF;
+            color: white;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,122,255,0.3);
+            transition: transform 0.2s;
+        }
+
+        .add-workout-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .workouts-list {
+            padding: 20px;
+        }
+
+        .workout-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 4px solid #007AFF;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .workout-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .workout-card.completed {
+            border-left-color: #34C759;
+            opacity: 0.8;
+        }
+
+        .workout-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .workout-icon {
+            font-size: 20px;
+            margin-right: 12px;
+        }
+
+        .workout-icon.completed {
+            color: #34C759;
+        }
+
+        .workout-icon.pending {
+            color: #007AFF;
+        }
+
+        .workout-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .workout-info {
+            font-size: 14px;
+            color: #666;
+            margin-left: 32px;
+        }
+
+        .workout-date {
+            font-size: 12px;
+            color: #999;
+            margin-left: 32px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state .icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #E5E5E7;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #007AFF;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-primary {
+            background: #007AFF;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0056CC;
+        }
+
+        .btn-primary:disabled {
+            background: #C7C7CC;
+            cursor: not-allowed;
+        }
+
+        .btn-success {
+            background: #34C759;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #28A745;
+        }
+
+        .workout-detail {
+            padding: 20px;
+        }
+
+        .workout-detail h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .exercise-card {
+            background: #F8F9FA;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .exercise-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .exercise-details {
+            display: flex;
+            gap: 16px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .exercise-detail {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #007AFF;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                max-width: 100%;
+            }
+            
+            .modal-content {
+                width: 95%;
+                margin: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🏋️‍♂️ Meus Treinos</h1>
+            <p id="workout-count">0 treinos criados</p>
+        </div>
+
+        <!-- Workouts List -->
+        <div class="workouts-list" id="workouts-list">
+            <div class="empty-state" id="empty-state">
+                <div class="icon">🏋️‍♂️</div>
+                <h3>Nenhum treino criado ainda</h3>
+                <p>Toque no + para criar seu primeiro treino</p>
+            </div>
+        </div>
+
+        <!-- Add Workout Button -->
+        <button class="add-workout-btn" onclick="showAddWorkoutModal()">+</button>
+    </div>
+
+    <!-- Add Workout Modal -->
+    <div class="modal" id="add-workout-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Novo Treino</h2>
+                <button class="close-btn" onclick="hideAddWorkoutModal()">&times;</button>
+            </div>
+            <div class="form-group">
+                <label for="workout-name">Nome do Treino</label>
+                <input type="text" id="workout-name" placeholder="Ex: Treino A - Peito">
+            </div>
+            <button class="btn btn-primary" onclick="addWorkout()">Criar Treino</button>
+        </div>
+    </div>
+
+    <!-- Workout Detail Modal -->
+    <div class="modal" id="workout-detail-modal">
+        <div class="modal-content">
+            <div class="workout-detail">
+                <button class="back-btn" onclick="hideWorkoutDetailModal()">← Voltar</button>
+                <h2 id="detail-workout-name">Treino</h2>
+                <div id="exercises-list"></div>
+                <button class="btn btn-success" onclick="markWorkoutCompleted()" id="complete-btn">Marcar como Concluído</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dados dos treinos
+        let workouts = JSON.parse(localStorage.getItem('workouts')) || [];
+        let currentWorkoutId = null;
+
+        // Dados de exemplo
+        if (workouts.length === 0) {
+            workouts = [
+                {
+                    id: 1,
+                    name: "Treino A - Peito e Costas",
+                    exercises: [
+                        { name: "Supino Reto", sets: 4, reps: 12, weight: 60 },
+                        { name: "Agachamento", sets: 3, reps: 15, weight: 40 },
+                        { name: "Puxada Frontal", sets: 3, reps: 10, weight: 50 }
+                    ],
+                    dateCreated: new Date().toISOString(),
+                    isCompleted: false
+                },
+                {
+                    id: 2,
+                    name: "Treino B - Ombros e Pernas",
+                    exercises: [
+                        { name: "Desenvolvimento", sets: 3, reps: 10, weight: 30 },
+                        { name: "Remada Curvada", sets: 4, reps: 12, weight: 45 },
+                        { name: "Leg Press", sets: 3, reps: 20, weight: 100 }
+                    ],
+                    dateCreated: new Date().toISOString(),
+                    isCompleted: false
+                }
+            ];
+            saveWorkouts();
+        }
+
+        // Funções principais
+        function saveWorkouts() {
+            localStorage.setItem('workouts', JSON.stringify(workouts));
+            updateWorkoutCount();
+        }
+
+        function updateWorkoutCount() {
+            document.getElementById('workout-count').textContent = `${workouts.length} treinos criados`;
+        }
+
+        function renderWorkouts() {
+            const container = document.getElementById('workouts-list');
+            const emptyState = document.getElementById('empty-state');
+            
+            if (workouts.length === 0) {
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            
+            container.innerHTML = workouts.map(workout => `
+                <div class="workout-card ${workout.isCompleted ? 'completed' : ''}" onclick="showWorkoutDetail(${workout.id})">
+                    <div class="workout-header">
+                        <div class="workout-icon ${workout.isCompleted ? 'completed' : 'pending'}">
+                            ${workout.isCompleted ? '✅' : '🏋️‍♂️'}
+                        </div>
+                        <div class="workout-name">${workout.name}</div>
+                    </div>
+                    <div class="workout-info">${workout.exercises.length} exercícios</div>
+                    <div class="workout-date">Criado em ${new Date(workout.dateCreated).toLocaleDateString('pt-BR')}</div>
+                </div>
+            `).join('');
+        }
+
+        function showAddWorkoutModal() {
+            document.getElementById('add-workout-modal').style.display = 'block';
+            document.getElementById('workout-name').focus();
+        }
+
+        function hideAddWorkoutModal() {
+            document.getElementById('add-workout-modal').style.display = 'none';
+            document.getElementById('workout-name').value = '';
+        }
+
+        function addWorkout() {
+            const name = document.getElementById('workout-name').value.trim();
+            if (!name) return;
+            
+            const newWorkout = {
+                id: Date.now(),
+                name: name,
+                exercises: [],
+                dateCreated: new Date().toISOString(),
+                isCompleted: false
+            };
+            
+            workouts.push(newWorkout);
+            saveWorkouts();
+            renderWorkouts();
+            hideAddWorkoutModal();
+        }
+
+        function showWorkoutDetail(workoutId) {
+            const workout = workouts.find(w => w.id === workoutId);
+            if (!workout) return;
+            
+            currentWorkoutId = workoutId;
+            document.getElementById('detail-workout-name').textContent = workout.name;
+            
+            const exercisesList = document.getElementById('exercises-list');
+            exercisesList.innerHTML = workout.exercises.map(exercise => `
+                <div class="exercise-card">
+                    <div class="exercise-name">${exercise.name}</div>
+                    <div class="exercise-details">
+                        <div class="exercise-detail">
+                            <span>🔄</span>
+                            <span>${exercise.sets} séries</span>
+                        </div>
+                        <div class="exercise-detail">
+                            <span>↻</span>
+                            <span>${exercise.reps} repetições</span>
+                        </div>
+                        <div class="exercise-detail">
+                            <span>⚖️</span>
+                            <span>${exercise.weight}kg</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            const completeBtn = document.getElementById('complete-btn');
+            if (workout.isCompleted) {
+                completeBtn.textContent = 'Treino Concluído';
+                completeBtn.disabled = true;
+                completeBtn.style.background = '#C7C7CC';
+            } else {
+                completeBtn.textContent = 'Marcar como Concluído';
+                completeBtn.disabled = false;
+                completeBtn.style.background = '#34C759';
+            }
+            
+            document.getElementById('workout-detail-modal').style.display = 'block';
+        }
+
+        function hideWorkoutDetailModal() {
+            document.getElementById('workout-detail-modal').style.display = 'none';
+            currentWorkoutId = null;
+        }
+
+        function markWorkoutCompleted() {
+            if (!currentWorkoutId) return;
+            
+            const workout = workouts.find(w => w.id === currentWorkoutId);
+            if (workout) {
+                workout.isCompleted = true;
+                workout.completedDate = new Date().toISOString();
+                saveWorkouts();
+                renderWorkouts();
+                hideWorkoutDetailModal();
+            }
+        }
+
+        // Event listeners
+        document.getElementById('workout-name').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addWorkout();
+            }
+        });
+
+        // Fechar modais clicando fora
+        document.getElementById('add-workout-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideAddWorkoutModal();
+            }
+        });
+
+        document.getElementById('workout-detail-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideWorkoutDetailModal();
+            }
+        });
+
+        // Inicializar
+        updateWorkoutCount();
+        renderWorkouts();
+    </script>
+</body>
+</html>
