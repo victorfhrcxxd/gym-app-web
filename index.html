@@ -147,6 +147,172 @@
             background: rgba(52, 199, 89, 0.2);
         }
 
+        /* Estilos para exercícios */
+        .exercise-item {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #007AFF;
+            position: relative;
+        }
+
+        .exercise-item.completed {
+            border-left-color: #34C759;
+            opacity: 0.8;
+        }
+
+        .exercise-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .exercise-checkbox {
+            width: 20px;
+            height: 20px;
+            border-radius: 6px;
+            border: 2px solid #007AFF;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: white;
+            transition: all 0.2s;
+        }
+
+        .exercise-checkbox.checked {
+            background: #007AFF;
+        }
+
+        .exercise-checkbox.checked::after {
+            content: '✓';
+        }
+
+        .exercise-info {
+            flex: 1;
+        }
+
+        .exercise-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1D1D1F;
+            margin-bottom: 4px;
+        }
+
+        .exercise-details {
+            font-size: 14px;
+            color: #86868B;
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .exercise-detail {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .exercise-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .exercise-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .exercise-btn.edit {
+            background: rgba(0, 122, 255, 0.1);
+            color: #007AFF;
+        }
+
+        .exercise-btn.delete {
+            background: rgba(255, 59, 48, 0.1);
+            color: #FF3B30;
+        }
+
+        .add-exercise-btn {
+            background: #007AFF;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 16px;
+            width: 100%;
+            transition: all 0.2s;
+        }
+
+        .add-exercise-btn:active {
+            background: #0056CC;
+        }
+
+        /* Modal de exercício */
+        .exercise-modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            width: 90%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .exercise-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1D1D1F;
+        }
+
+        .form-group input {
+            padding: 12px;
+            border: 1px solid #D1D1D6;
+            border-radius: 8px;
+            font-size: 16px;
+            background: white;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #007AFF;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 12px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
         .workout-card.completed {
             border-left-color: #34C759;
             opacity: 0.8;
@@ -552,7 +718,54 @@
                 <button class="back-btn" onclick="hideWorkoutDetailModal()">← Voltar</button>
                 <h2 id="detail-workout-name">Treino</h2>
                 <div id="exercises-list"></div>
+                <button class="add-exercise-btn" onclick="showAddExerciseModal()">+ Adicionar Exercício</button>
                 <button class="btn btn-success" onclick="markWorkoutCompleted()" id="complete-btn">Marcar como Concluído</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Adicionar Exercício -->
+    <div class="modal" id="add-exercise-modal">
+        <div class="modal-content exercise-modal-content">
+            <div class="modal-header">
+                <h2>Adicionar Exercício</h2>
+                <button class="close-btn" onclick="hideAddExerciseModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <form class="exercise-form" onsubmit="addExercise(event)">
+                    <div class="form-group">
+                        <label for="exercise-name">Nome do Exercício</label>
+                        <input type="text" id="exercise-name" placeholder="Ex: Supino Reto" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="exercise-sets">Séries</label>
+                            <input type="number" id="exercise-sets" value="3" min="1" max="20" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="exercise-reps">Repetições</label>
+                            <input type="number" id="exercise-reps" value="10" min="1" max="100" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="exercise-weight">Peso (kg)</label>
+                            <input type="number" id="exercise-weight" value="0" min="0" step="0.5">
+                        </div>
+                        <div class="form-group">
+                            <label for="exercise-rest">Descanso (min)</label>
+                            <input type="number" id="exercise-rest" value="1" min="0" max="10" step="0.5">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="exercise-notes">Observações (opcional)</label>
+                        <input type="text" id="exercise-notes" placeholder="Ex: Foco na técnica">
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary" onclick="hideAddExerciseModal()">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Adicionar Exercício</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -769,25 +982,51 @@
             
             const exercisesList = document.getElementById('exercises-list');
             if (exercisesList) {
-                exercisesList.innerHTML = workout.exercises.map(exercise => `
-                    <div class="exercise-card">
-                        <div class="exercise-name">${exercise.name}</div>
-                        <div class="exercise-details">
-                            <div class="exercise-detail">
-                                <span>🔄</span>
-                                <span>${exercise.sets} séries</span>
+                if (workout.exercises.length === 0) {
+                    exercisesList.innerHTML = `
+                        <div class="empty-state">
+                            <div class="icon">💪</div>
+                            <h3>Nenhum exercício adicionado</h3>
+                            <p>Adicione exercícios para começar seu treino</p>
+                        </div>
+                    `;
+                } else {
+                    exercisesList.innerHTML = workout.exercises.map(exercise => `
+                        <div class="exercise-item ${exercise.isCompleted ? 'completed' : ''}">
+                            <div class="exercise-header">
+                                <div class="exercise-checkbox ${exercise.isCompleted ? 'checked' : ''}" 
+                                     onclick="toggleExerciseCompleted(${workoutId}, ${exercise.id})">
+                                </div>
+                                <div class="exercise-info">
+                                    <div class="exercise-name">${exercise.name}</div>
+                                    <div class="exercise-details">
+                                        <div class="exercise-detail">
+                                            <span>📊</span>
+                                            <span>${exercise.sets} séries</span>
+                                        </div>
+                                        <div class="exercise-detail">
+                                            <span>🔄</span>
+                                            <span>${exercise.reps} reps</span>
+                                        </div>
+                                        <div class="exercise-detail">
+                                            <span>⚖️</span>
+                                            <span>${exercise.weight}kg</span>
+                                        </div>
+                                        <div class="exercise-detail">
+                                            <span>⏱️</span>
+                                            <span>${exercise.restTime}min</span>
+                                        </div>
+                                    </div>
+                                    ${exercise.notes ? `<div class="exercise-notes" style="margin-top: 8px; font-size: 12px; color: #86868B;">📝 ${exercise.notes}</div>` : ''}
+                                </div>
                             </div>
-                            <div class="exercise-detail">
-                                <span>↻</span>
-                                <span>${exercise.reps} reps</span>
-                            </div>
-                            <div class="exercise-detail">
-                                <span>⚖️</span>
-                                <span>${exercise.weight}kg</span>
+                            <div class="exercise-actions">
+                                <button class="exercise-btn edit" onclick="editExercise(${workoutId}, ${exercise.id})">Editar</button>
+                                <button class="exercise-btn delete" onclick="deleteExercise(${workoutId}, ${exercise.id})">Remover</button>
                             </div>
                         </div>
-                    </div>
-                `).join('');
+                    `).join('');
+                }
             }
             
             const completeBtn = document.getElementById('complete-btn');
@@ -896,6 +1135,107 @@
                 }, 100);
                 
                 showAlert('success', 'Treino Removido', `"${workout.name}" foi removido com sucesso`, 3000);
+            }
+        }
+
+        // Funções para gerenciar exercícios
+        function showAddExerciseModal() {
+            const modal = document.getElementById('add-exercise-modal');
+            if (modal) modal.style.display = 'block';
+            
+            // Limpar formulário
+            document.getElementById('exercise-name').value = '';
+            document.getElementById('exercise-sets').value = '3';
+            document.getElementById('exercise-reps').value = '10';
+            document.getElementById('exercise-weight').value = '0';
+            document.getElementById('exercise-rest').value = '1';
+            document.getElementById('exercise-notes').value = '';
+        }
+
+        function hideAddExerciseModal() {
+            const modal = document.getElementById('add-exercise-modal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        function addExercise(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('exercise-name').value.trim();
+            const sets = parseInt(document.getElementById('exercise-sets').value);
+            const reps = parseInt(document.getElementById('exercise-reps').value);
+            const weight = parseFloat(document.getElementById('exercise-weight').value);
+            const restTime = parseFloat(document.getElementById('exercise-rest').value);
+            const notes = document.getElementById('exercise-notes').value.trim();
+            
+            if (!name) {
+                showAlert('warning', 'Nome Obrigatório', 'Digite um nome para o exercício', 3000);
+                return;
+            }
+            
+            const exercise = {
+                id: Date.now(),
+                name: name,
+                sets: sets,
+                reps: reps,
+                weight: weight,
+                restTime: restTime,
+                notes: notes,
+                isCompleted: false
+            };
+            
+            const workout = workouts.find(w => w.id === currentWorkoutId);
+            if (workout) {
+                workout.exercises.push(exercise);
+                saveWorkouts();
+                showWorkoutDetail(currentWorkoutId); // Recarregar detalhes
+                hideAddExerciseModal();
+                showAlert('success', 'Exercício Adicionado!', `"${name}" foi adicionado ao treino`, 3000);
+            }
+        }
+
+        function toggleExerciseCompleted(workoutId, exerciseId) {
+            const workout = workouts.find(w => w.id === workoutId);
+            if (!workout) return;
+            
+            const exercise = workout.exercises.find(e => e.id === exerciseId);
+            if (!exercise) return;
+            
+            exercise.isCompleted = !exercise.isCompleted;
+            saveWorkouts();
+            showWorkoutDetail(workoutId); // Recarregar detalhes
+            
+            const status = exercise.isCompleted ? 'concluído' : 'desmarcado';
+            showAlert('success', 'Exercício Atualizado!', `"${exercise.name}" foi ${status}`, 2000);
+        }
+
+        function editExercise(workoutId, exerciseId) {
+            const workout = workouts.find(w => w.id === workoutId);
+            if (!workout) return;
+            
+            const exercise = workout.exercises.find(e => e.id === exerciseId);
+            if (!exercise) return;
+            
+            const newName = prompt('Editar nome do exercício:', exercise.name);
+            if (newName && newName.trim() !== exercise.name) {
+                exercise.name = newName.trim();
+                saveWorkouts();
+                showWorkoutDetail(workoutId);
+                showAlert('success', 'Exercício Editado!', `Nome alterado para "${exercise.name}"`, 3000);
+            }
+        }
+
+        function deleteExercise(workoutId, exerciseId) {
+            const workout = workouts.find(w => w.id === workoutId);
+            if (!workout) return;
+            
+            const exercise = workout.exercises.find(e => e.id === exerciseId);
+            if (!exercise) return;
+            
+            if (confirm(`Tem certeza que deseja remover o exercício "${exercise.name}"?`)) {
+                workout.exercises = workout.exercises.filter(e => e.id !== exerciseId);
+                saveWorkouts();
+                showWorkoutDetail(workoutId);
+                showAlert('success', 'Exercício Removido', `"${exercise.name}" foi removido do treino`, 3000);
             }
         }
 
